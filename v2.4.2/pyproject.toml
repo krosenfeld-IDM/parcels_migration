@@ -1,0 +1,22 @@
+[project]
+name = "v2-4-2"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.10, <3.11"
+dependencies = [
+    "cartopy>=0.24.1",
+    "cftime>=1.6.4.post1",
+    "cgen>=2020.1",
+    "dask>=2025.1.0",
+    "ipykernel>=6.29.5",
+    "netcdf4>=1.7.2",
+    "numpy==1.24",
+    "parcels==2.4.2",
+    "psutil>=6.1.1",
+    "pymbolic>=2024.2.2",
+    "scipy>=1.15.1",
+    "tqdm>=4.67.1",
+    "xarray>=2025.1.1",
+    "zarr>=2.18.3",
+]
