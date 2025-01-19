@@ -52,7 +52,7 @@ def UpdateR(particle, fieldset, time):
     if time == 0:
         particle.radius_start = fieldset.R[
             time, particle.depth, particle.lat, particle.lon
-        ]    
+        ]
     particle.radius = fieldset.R[time, particle.depth, particle.lat, particle.lon]
 
 
