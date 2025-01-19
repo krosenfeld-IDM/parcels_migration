@@ -59,7 +59,7 @@ pset.show(
     domain={"N": 60, "S": 49, "E": 15, "W": 0},
     depth_level=depth_level,
 )
-plt.savefig("figures/tutorial_nemo_3D.png")
+plt.savefig("../figures/tutorial_nemo_3D.png")
 
 # ## Adding other fields like cell edges
 # It is quite straightforward to add other gridded data, on the same curvilinear or any other type of grid, to the fieldset. Because it is good practice to make no changes to a `FieldSet` once a `ParticleSet` has been defined in it, we redefine the fieldset and add the fields with the cell edges from the coordinates file using `FieldSet.add_field()`.
@@ -95,15 +95,4 @@ fieldset.add_field(e2u)
 fieldset.add_field(e1v)
 fieldset.add_field(e2v)
 
-depth_level = 8
-print(
-    f"Level[{int(depth_level)}] depth is: [{fieldset.W.grid.depth[depth_level]:g} {fieldset.W.grid.depth[depth_level + 1]:g}]"
-)
-plt.figure()
-pset.show(
-    field=fieldset.W,
-    domain={"N": 60, "S": 49, "E": 15, "W": 0},
-    depth_level=depth_level,
-)
-plt.savefig("figures/tutorial_nemo_3D_with_edges.png")
 # %%
