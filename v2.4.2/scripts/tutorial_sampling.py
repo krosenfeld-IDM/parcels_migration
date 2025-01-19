@@ -61,35 +61,8 @@ ax.scatter(lon, lat, c="w")
 plt.colorbar(T_contour, label="T [$^{\circ} C$]")
 plt.savefig("../figures/tutorial_sampling_field.png")
 
-# To sample the temperature field, we need to create a new class of particles where temperature is a `Variable`. As an argument for the `Variable` class, we need to provide the initial values for the particles. The easiest option is to access `fieldset.T`, but this option has some drawbacks.
 
-
-class SampleParticle(JITParticle):  # Define a new particle class
-    temperature = Variable(
-        "temperature", initial=fieldset.T
-    )  # Variable 'temperature' initialised by sampling the temperature
-
-
-pset = ParticleSet(
-    fieldset=fieldset, pclass=SampleParticle, lon=lon, lat=lat, time=time
-)
-
-# Using `fieldset.T` leads to the `WARNING` displayed above because `Variable` accesses the fieldset in the slower SciPy mode. Another problem can occur when using the repeatdt argument instead of time:
-
-repeatdt = delta(hours=3)
-
-try:
-    pset = ParticleSet(
-        fieldset=fieldset, pclass=SampleParticle, lon=lon, lat=lat, repeatdt=repeatdt
-    )
-except RuntimeError:
-    print(
-        "Since the initial time is not defined, the `Variable` class does not know at what time to access the temperature field."
-    )
-
-# The solution to this initialisation problem is to leave the initial value zero and sample the initial condition in JIT mode with the sampling Kernel:
-
-
+# To sample the temperature field, we need to create a new class of particles where temperature is a `Variable`. As an argument for the `Variable` class, we need to provide the initial values for the particles.
 class SampleParticleInitZero(JITParticle):  # Define a new particle class
     temperature = Variable(
         "temperature", initial=0
