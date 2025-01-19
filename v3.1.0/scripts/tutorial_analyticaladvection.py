@@ -236,9 +236,9 @@ fieldsetBJ.add_periodic_halo(zonal=True)
 
 def ZonalBC(particle, fieldset, time):
     if particle.lon < fieldset.halo_west:
-        particle.lon += fieldset.halo_east - fieldset.halo_west
+        particle_dlon += fieldset.halo_east - fieldset.halo_west
     elif particle.lon > fieldset.halo_east:
-        particle.lon -= fieldset.halo_east - fieldset.halo_west
+        particle_dlon -= fieldset.halo_east - fieldset.halo_west
 
 
 # And simulate a set of particles on this fieldset, using the `AdvectionAnalytical` kernel
