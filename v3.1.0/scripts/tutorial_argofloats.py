@@ -26,8 +26,9 @@ def ArgoVerticalMovement(particle, fieldset, time):
 
     if particle.cycle_phase == 0:
         # Phase 0: Sinking with vertical_speed until depth is driftdepth
-        particle.depth += vertical_speed * particle.dt
-        if particle.depth >= driftdepth:
+        particle_ddepth += vertical_speed * particle.dt
+        if particle.depth + particle_ddepth >= driftdepth:
+            particle_ddepth = driftdepth - particle.depth
             particle.cycle_phase = 1
 
     elif particle.cycle_phase == 1:
@@ -39,16 +40,17 @@ def ArgoVerticalMovement(particle, fieldset, time):
 
     elif particle.cycle_phase == 2:
         # Phase 2: Sinking further to maxdepth
-        particle.depth += vertical_speed * particle.dt
-        if particle.depth >= maxdepth:
+        particle_ddepth += vertical_speed * particle.dt
+        if particle.depth + particle_ddepth >= maxdepth:
+            particle_ddepth = maxdepth - particle.depth
             particle.cycle_phase = 3
 
     elif particle.cycle_phase == 3:
         # Phase 3: Rising with vertical_speed until at surface
-        particle.depth -= vertical_speed * particle.dt
+        particle_ddepth -= vertical_speed * particle.dt
         # particle.temp = fieldset.temp[time, particle.depth, particle.lat, particle.lon]  # if fieldset has temperature
-        if particle.depth <= fieldset.mindepth:
-            particle.depth = fieldset.mindepth
+        if particle.depth + particle_ddepth <= fieldset.mindepth:
+            particle_ddepth = fieldset.mindepth - particle.depth
             # particle.temp = 0./0.  # reset temperature to NaN at end of sampling cycle
             particle.cycle_phase = 4
 
