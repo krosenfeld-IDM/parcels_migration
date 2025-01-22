@@ -1,9 +1,8 @@
-# from parcels import FieldSet, ParticleSet, ScipyParticle, JITParticle, Variable
-# from parcels import AdvectionAnalytical, AdvectionRK4
 import parcels
 import numpy as np
 from datetime import timedelta as delta
 import matplotlib.pyplot as plt
+
 
 def radialrotation_fieldset(xdim=201, ydim=201):
     # Coordinates of the test fieldset (on C-grid in m)
@@ -36,6 +35,7 @@ def radialrotation_fieldset(xdim=201, ydim=201):
     fieldset.U.interp_method = "cgrid_velocity"
     fieldset.V.interp_method = "cgrid_velocity"
     return fieldset
+
 
 def doublegyre_fieldset(times, xdim=51, ydim=51):
     """Implemented following Froyland and Padberg (2009), 10.1016/j.physd.2009.03.002"""
@@ -148,7 +148,10 @@ def UpdateR(particle, fieldset, time):
 class MyParticle(parcels.ScipyParticle):
     fieldsetRR = radialrotation_fieldset()
     radius = parcels.Variable("radius", dtype=np.float32, initial=0.0)
-    radius_start = parcels.Variable("radius_start", dtype=np.float32, initial=fieldsetRR.R)
+    radius_start = parcels.Variable(
+        "radius_start", dtype=np.float32, initial=fieldsetRR.R
+    )
+
 
 def ZonalBC(particle, fieldset, time):
     if particle.lon < fieldset.halo_west:
@@ -156,18 +159,16 @@ def ZonalBC(particle, fieldset, time):
     elif particle.lon > fieldset.halo_east:
         particle.lon -= fieldset.halo_east - fieldset.halo_west
 
-def main(args=None):
 
+def main(args=None):
     fieldsetRR = radialrotation_fieldset()
 
     pset = parcels.ParticleSet(fieldsetRR, pclass=MyParticle, lon=0, lat=4e3, time=0)
 
-    # output = pset.ParticleFile(name="radialAnalytical.zarr", outputdt=delta(hours=1))
     pset.execute(
         pset.Kernel(UpdateR) + parcels.AdvectionAnalytical,
         runtime=delta(hours=24),
         dt=np.inf,  # needs to be set to np.inf for Analytical Advection
-        # output_file=output,
     )
 
     print(f"Particle radius at start of run {pset.radius_start[0]}")
@@ -180,12 +181,10 @@ def main(args=None):
     X, Y = np.meshgrid(np.arange(0.15, 1.85, 0.1), np.arange(0.15, 0.85, 0.1))
     psetAA = parcels.ParticleSet(fieldsetDG, pclass=parcels.ScipyParticle, lon=X, lat=Y)
 
-    # output = psetAA.ParticleFile(name="doublegyreAA.zarr", outputdt=0.1)
     psetAA.execute(
         parcels.AdvectionAnalytical,
         dt=np.inf,  # needs to be set to np.inf for Analytical Advection
         runtime=3,
-        # output_file=output,
     )
 
     # Now, we can also compute these trajectories with the `AdvectionRK4` kernel
@@ -208,20 +207,22 @@ def main(args=None):
     # And simulate a set of particles on this fieldset, using the `AdvectionAnalytical` kernel
     X, Y = np.meshgrid(np.arange(0, 19900, 100), np.arange(-100, 100, 100))
 
-    psetAA = parcels.ParticleSet(fieldsetBJ, pclass=parcels.ScipyParticle, lon=X, lat=Y, time=0)
+    psetAA = parcels.ParticleSet(
+        fieldsetBJ, pclass=parcels.ScipyParticle, lon=X, lat=Y, time=0
+    )
 
-    output = psetAA.ParticleFile(name="bickleyjetAA.zarr", outputdt=delta(hours=1))
     psetAA.execute(
         parcels.AdvectionAnalytical + psetAA.Kernel(ZonalBC),
         dt=np.inf,
         runtime=delta(days=1),
-        output_file=output,
     )
 
     # Like with the double gyre above, we can also compute these trajectories with the `AdvectionRK4` kernel
     psetRK4 = parcels.ParticleSet(fieldsetBJ, pclass=parcels.JITParticle, lon=X, lat=Y)
     psetRK4.execute(
-        parcels.AdvectionRK4 + psetRK4.Kernel(ZonalBC), dt=delta(minutes=5), runtime=delta(days=1)
+        parcels.AdvectionRK4 + psetRK4.Kernel(ZonalBC),
+        dt=delta(minutes=5),
+        runtime=delta(days=1),
     )
 
     # And finally, we can again compare the end locations from the `AdvectionRK4` and `AdvectionAnalytical` simulations
