@@ -3,7 +3,6 @@ from datetime import timedelta
 import numpy as np
 import xarray as xr
 import matplotlib.pyplot as plt
-from parcels import ErrorCode
 
 
 # Define the new Kernel that mimics Argo vertical movement
