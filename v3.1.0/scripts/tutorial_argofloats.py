@@ -9,7 +9,7 @@ from parcels import (
     AdvectionRK4,
     Variable,
     download_example_dataset,
-    StatusCode
+    StatusCode,
 )
 from datetime import timedelta
 import numpy as np

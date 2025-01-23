@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 
 def radialrotation_fieldset(xdim=201, ydim=201):
     # Coordinates of the test fieldset (on C-grid in m)
-    a = b = 20000  # domain size
+    a = b = 20000 
     lon = np.linspace(-a / 2, a / 2, xdim, dtype=np.float32)
     lat = np.linspace(-b / 2, b / 2, ydim, dtype=np.float32)
     dx, dy = lon[2] - lon[1], lat[2] - lat[1]
@@ -168,7 +168,7 @@ def main(args=None):
     pset.execute(
         pset.Kernel(UpdateR) + parcels.AdvectionAnalytical,
         runtime=delta(hours=24),
-        dt=np.inf,  # needs to be set to np.inf for Analytical Advection
+        dt=np.inf,
     )
 
     print(f"Particle radius at start of run {pset.radius_start[0]}")
@@ -183,7 +183,7 @@ def main(args=None):
 
     psetAA.execute(
         parcels.AdvectionAnalytical,
-        dt=np.inf,  # needs to be set to np.inf for Analytical Advection
+        dt=np.inf,
         runtime=3,
     )
 
