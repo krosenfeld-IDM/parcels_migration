@@ -161,7 +161,7 @@ def basic_diffusion_example():
 
 
 def main():
-    # basic_diffusion_example()
+    basic_diffusion_example()
     smagdiff_example()
 
 
