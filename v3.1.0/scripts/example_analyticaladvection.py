@@ -1,6 +1,6 @@
 import parcels
 import numpy as np
-from datetime import timedelta as delta
+from datetime import timedelta
 import matplotlib.pyplot as plt
 
 
@@ -19,7 +19,7 @@ def radialrotation_fieldset(xdim=201, ydim=201):
     def calc_r_phi(ln, lt):
         return np.sqrt(ln**2 + lt**2), np.arctan2(ln, lt)
 
-    omega = 2 * np.pi / delta(days=1).total_seconds()
+    omega = 2 * np.pi / timedelta(days=1).total_seconds()
     for i in range(lon.size):
         for j in range(lat.size):
             r, phi = calc_r_phi(lon[i], lat[j])
@@ -171,8 +171,8 @@ def main(args=None):
 
     pset.execute(
         pset.Kernel(UpdateR) + parcels.AdvectionAnalytical,
-        runtime=delta(hours=24),
-        dt=delta(hours=1),  # needs to be set to np.inf for Analytical Advection
+        runtime=timedelta(hours=24),
+        dt=timedelta(hours=1),  # needs to be set to np.inf for Analytical Advection
     )
 
     print(f"Particle radius at start of run {pset.radius_start[0]}")
@@ -217,16 +217,16 @@ def main(args=None):
 
     psetAA.execute(
         parcels.AdvectionAnalytical + psetAA.Kernel(ZonalBC),
-        dt=delta(hours=1),
-        runtime=delta(days=1),
+        dt=timedelta(hours=1),
+        runtime=timedelta(days=1),
     )
 
     # Like with the double gyre above, we can also compute these trajectories with the `AdvectionRK4` kernel
     psetRK4 = parcels.ParticleSet(fieldsetBJ, pclass=parcels.JITParticle, lon=X, lat=Y)
     psetRK4.execute(
         parcels.AdvectionRK4 + psetRK4.Kernel(ZonalBC),
-        dt=delta(minutes=5),
-        runtime=delta(days=1),
+        dt=timedelta(minutes=5),
+        runtime=timedelta(days=1),
     )
 
     # And finally, we can again compare the end locations from the `AdvectionRK4` and `AdvectionAnalytical` simulations
